@@ -580,31 +580,6 @@
     }
   </script>
 
-  <script>
-    function disableAutoplayOnMobile() {
-      // 폭 768px 이하(모바일)에서만 실행
-      if (window.matchMedia("(max-width: 768px)").matches) {
-        var videos = document.querySelectorAll("video");
-        videos.forEach(function (v) {
-          // autoplay / loop 속성 제거
-          v.removeAttribute("autoplay");
-          v.removeAttribute("loop");
-
-          // 이미 재생 중이면 멈추고 처음으로
-          try {
-            v.pause();
-            v.currentTime = 0;
-          } catch (e) {}
-        });
-      }
-    }
-
-    // 처음 로드될 때 한 번
-    window.addEventListener("DOMContentLoaded", disableAutoplayOnMobile);
-    // 화면을 돌리거나 사이즈가 바뀔 때도 한 번 더
-    window.addEventListener("resize", disableAutoplayOnMobile);
-  </script>
-
 </body>
 
 </html>
