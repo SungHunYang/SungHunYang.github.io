@@ -526,42 +526,48 @@
     window.addEventListener('DOMContentLoaded', function () {
       showSection('news-section');
     });
-
   </script>
 
   <script>
   function handleVideoAutoplay() {
     const pubSection = document.getElementById("research-section");
     const videos = pubSection.querySelectorAll("video");
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
     if (pubSection.style.display === "block") {
-      // publication 섹션이 보일 때 → autoplay 켜고 재생
+      // publication이 열렸을 때
+
       videos.forEach(v => {
-        v.setAttribute("autoplay", "");
-        v.setAttribute("loop", "");
-        v.play().catch(()=>{});
+        // 모바일에서는 자동재생 금지
+        if (!isMobile) {
+          v.setAttribute("autoplay", "");
+          v.setAttribute("loop", "");
+          v.play().catch(()=>{});
+        }
       });
+
     } else {
-      // publication 섹션이 숨겨져 있을 때 → autoplay 제거 & 정지
+      // publication 닫혔을 때 : video 초기화 (창이 튀는 문제 해결)
       videos.forEach(v => {
         v.removeAttribute("autoplay");
         v.removeAttribute("loop");
+
         try {
           v.pause();
-          v.currentTime = 0;
+          v.currentTime = 0;   // 초기화 → 팝업처럼 튀는 문제 사라짐
         } catch(e){}
       });
     }
   }
 
-  // showSection 끝에서 자동 실행되도록
+  // 탭 이동 연동
   const originalShowSection = showSection;
   showSection = function(sectionId) {
     originalShowSection(sectionId);
     handleVideoAutoplay();
   };
 
-  // 첫 로드시 초기화
+  // 첫 로딩
   window.addEventListener("DOMContentLoaded", handleVideoAutoplay);
   </script>
 
