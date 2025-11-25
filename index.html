@@ -526,48 +526,86 @@
     window.addEventListener('DOMContentLoaded', function () {
       showSection('news-section');
     });
+
   </script>
-</body>
 
-</html>
+  <script>
+  function handleVideoAutoplay() {
+    const pubSection = document.getElementById("research-section");
+    const videos = pubSection.querySelectorAll("video");
 
-<script>
-  function toggleAuthors(id, el) {
-    var extra = document.getElementById(id);
-    if (!extra) return;
-
-    if (extra.style.display === "inline") {
-      extra.style.display = "none";
-      el.textContent = "+ more";
+    if (pubSection.style.display === "block") {
+      // publication 섹션이 보일 때 → autoplay 켜고 재생
+      videos.forEach(v => {
+        v.setAttribute("autoplay", "");
+        v.setAttribute("loop", "");
+        v.play().catch(()=>{});
+      });
     } else {
-      extra.style.display = "inline";
-      el.textContent = "show less";
-    }
-  }
-</script>
-
-<script>
-  function disableAutoplayOnMobile() {
-    // 폭 768px 이하(모바일)에서만 실행
-    if (window.matchMedia("(max-width: 768px)").matches) {
-      var videos = document.querySelectorAll("video");
-      videos.forEach(function (v) {
-        // autoplay / loop 속성 제거
+      // publication 섹션이 숨겨져 있을 때 → autoplay 제거 & 정지
+      videos.forEach(v => {
         v.removeAttribute("autoplay");
         v.removeAttribute("loop");
-
-        // 이미 재생 중이면 멈추고 처음으로
         try {
           v.pause();
           v.currentTime = 0;
-        } catch (e) {}
+        } catch(e){}
       });
     }
   }
 
-  // 처음 로드될 때 한 번
-  window.addEventListener("DOMContentLoaded", disableAutoplayOnMobile);
-  // 화면을 돌리거나 사이즈가 바뀔 때도 한 번 더
-  window.addEventListener("resize", disableAutoplayOnMobile);
-</script>
+  // showSection 끝에서 자동 실행되도록
+  const originalShowSection = showSection;
+  showSection = function(sectionId) {
+    originalShowSection(sectionId);
+    handleVideoAutoplay();
+  };
+
+  // 첫 로드시 초기화
+  window.addEventListener("DOMContentLoaded", handleVideoAutoplay);
+  </script>
+
+  <script>
+    function toggleAuthors(id, el) {
+      var extra = document.getElementById(id);
+      if (!extra) return;
+
+      if (extra.style.display === "inline") {
+        extra.style.display = "none";
+        el.textContent = "+ more";
+      } else {
+        extra.style.display = "inline";
+        el.textContent = "show less";
+      }
+    }
+  </script>
+
+  <script>
+    function disableAutoplayOnMobile() {
+      // 폭 768px 이하(모바일)에서만 실행
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        var videos = document.querySelectorAll("video");
+        videos.forEach(function (v) {
+          // autoplay / loop 속성 제거
+          v.removeAttribute("autoplay");
+          v.removeAttribute("loop");
+
+          // 이미 재생 중이면 멈추고 처음으로
+          try {
+            v.pause();
+            v.currentTime = 0;
+          } catch (e) {}
+        });
+      }
+    }
+
+    // 처음 로드될 때 한 번
+    window.addEventListener("DOMContentLoaded", disableAutoplayOnMobile);
+    // 화면을 돌리거나 사이즈가 바뀔 때도 한 번 더
+    window.addEventListener("resize", disableAutoplayOnMobile);
+  </script>
+
+</body>
+
+</html>
 
