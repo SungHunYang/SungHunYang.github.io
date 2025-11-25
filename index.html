@@ -520,70 +520,39 @@
       if (activeBtn) {
         activeBtn.classList.add('active');
       }
+
+      // 섹션 바뀔 때마다 비디오 상태 갱신
+      handleVideoAutoplay();
     }
 
-    // 페이지 로드 시 기본으로 News 보이도록
+    function handleVideoAutoplay() {
+      const pubSection = document.getElementById("research-section");
+      const videos = pubSection.querySelectorAll("video");
+
+      const isVisible = pubSection && pubSection.style.display === "block";
+
+      videos.forEach(v => {
+        if (isVisible) {
+          // Publication 섹션이 보일 때만 자동재생
+          v.setAttribute("autoplay", "");
+          v.setAttribute("loop", "");
+          v.play().catch(() => {});
+        } else {
+          // 숨겨졌으면 재생 중지 + 처음으로
+          v.removeAttribute("autoplay");
+          v.removeAttribute("loop");
+          try {
+            v.pause();
+            v.currentTime = 0;
+          } catch(e){}
+        }
+      });
+    }
+
+    // 첫 로드시 기본 News 탭 열고, 비디오 상태도 초기화
     window.addEventListener('DOMContentLoaded', function () {
       showSection('news-section');
     });
-  </script>
-
-  <script>
-  function handleVideoAutoplay() {
-    const pubSection = document.getElementById("research-section");
-    const videos = pubSection.querySelectorAll("video");
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-    if (pubSection.style.display === "block") {
-      // publication이 열렸을 때
-
-      videos.forEach(v => {
-        // 모바일에서는 자동재생 금지
-        if (!isMobile) {
-          v.setAttribute("autoplay", "");
-          v.setAttribute("loop", "");
-          v.play().catch(()=>{});
-        }
-      });
-
-    } else {
-      // publication 닫혔을 때 : video 초기화 (창이 튀는 문제 해결)
-      videos.forEach(v => {
-        v.removeAttribute("autoplay");
-        v.removeAttribute("loop");
-
-        try {
-          v.pause();
-          v.currentTime = 0;   // 초기화 → 팝업처럼 튀는 문제 사라짐
-        } catch(e){}
-      });
-    }
-  }
-
-  // 탭 이동 연동
-  const originalShowSection = showSection;
-  showSection = function(sectionId) {
-    originalShowSection(sectionId);
-    handleVideoAutoplay();
-  };
-
-  // 첫 로딩
-  window.addEventListener("DOMContentLoaded", handleVideoAutoplay);
-  </script>
-
-  <script>
-    function toggleAuthors(id, el) {
-      var extra = document.getElementById(id);
-      if (!extra) return;
-
-      if (extra.style.display === "inline") {
-        extra.style.display = "none";
-        el.textContent = "+ more";
-      } else {
-        extra.style.display = "inline";
-        el.textContent = "show less";
-      }
-    }
   </script>
 
 </body>
