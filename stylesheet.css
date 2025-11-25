@@ -482,3 +482,139 @@ span.highlight {
   background: #333;  /* 강조된 밑줄 색 */
 }
 
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  heading {
+    font-size: 20px;
+  }
+  .news-title {
+    font-size: 14px;
+  }
+  .pub-text-cell papertitle {
+    font-size: 15px;
+  }
+  /* 전체 폭 꽉 채우기 */
+  body > table {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 위쪽 프로필 영역: 글/사진 세로 배치 */
+  /* 첫 번째 프로필 테이블 안의 두 td를 한 줄씩 배치 */
+  body > table > tbody > tr > td > table:nth-of-type(1) td {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center;
+  }
+
+  /* 소개 문단 좌우 여백 약간 줄이기 */
+  .intro,
+  .intro-sub {
+    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* 소셜 아이콘: 가운데 정렬 + 줄바꿈 허용 */
+  .social-icons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  /* 프로필 이미지: 화면 기준으로 적당한 크기 + 가운데 */
+  img[alt="profile photo"] {
+    width: 55% !important;
+    max-width: 220px !important;
+    margin: 0 auto;
+    display: block;
+  }
+
+  /* 탭 버튼: 모바일에서는 조금 더 작고 촘촘하게 */
+  .tab-nav {
+    margin: 30px 0 20px;
+  }
+
+  .tab-button {
+    padding: 6px 14px;
+    margin: 0 8px;
+    font-size: 14px;
+  }
+
+  /* News 테이블: 날짜/내용 세로로 쌓기 */
+  .news-table {
+    width: 100%;
+  }
+
+  .news-table tr {
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .news-date,
+  .news-body {
+    display: block;
+    width: 100%;
+    vertical-align: top;
+  }
+
+  .news-date {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+
+  .news-title-list {
+    margin-left: 18px;   /* bullet 위치 유지 */
+  }
+
+  /* Publications: 썸네일 위, 텍스트 아래로 세로 배치 */
+  .pub-row {
+    display: block;
+    padding: 12px 0;
+  }
+
+  .pub-thumb-cell,
+  .pub-text-cell {
+    display: block;
+    width: 100%;
+  }
+
+  .pub-thumb-cell {
+    margin-bottom: 8px;
+  }
+
+  .pub-thumb {
+    max-width: 100%;
+  }
+
+  .pub-thumb img,
+  .pub-thumb video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .pub-text-cell {
+    padding-left: 0 !important;
+  }
+
+  /* arXiv / code 태그 줄바꿈 여유 */
+  .pub-links {
+    gap: 8px;
+  }
+
+  /* CV iframe: 모바일에서는 화면 높이에 맞추기 */
+  .cv-container iframe {
+    height: 65vh;
+  }
+
+  /* 푸터와 본문 사이 여백 조금 줄여서 자연스럽게 */
+  table[style*="margin:150px auto 0 auto"] {
+    margin-top: 80px !important;
+  }
+}
