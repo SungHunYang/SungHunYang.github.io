@@ -250,7 +250,7 @@ def main():
     plot_line(
         recent_daily_dates,
         recent_daily_vals,
-        "Daily Visits (last 14 days, KST)",
+        "Daily Visits",
         "stats/traffic_daily.png",
         xlabel="date (KST)",
         ylabel="visits",
@@ -260,7 +260,7 @@ def main():
     plot_line(
         weekly_keys,
         weekly_vals,
-        "Weekly Visits (KST weeks)",
+        "Weekly Visits",
         "stats/traffic_weekly.png",
         xlabel="year-month-week",
         ylabel="visits",
@@ -270,7 +270,7 @@ def main():
     plot_line(
         monthly_keys,
         monthly_vals,
-        "Monthly Visits (KST)",
+        "Monthly Visits",
         "stats/traffic_monthly.png",
         xlabel="year-month",
         ylabel="visits",
