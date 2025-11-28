@@ -250,7 +250,7 @@ def main():
     plot_line(
         recent_daily_dates,
         recent_daily_vals,
-        "Daily Visits",
+        "Daily Visits (last 14 days)",
         "stats/traffic_daily.png",
         xlabel="date (KST)",
         ylabel="visits",
