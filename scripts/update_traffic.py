@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 
 # ---------------------------------------------------------
-# 여기를 너의 GitHub 계정 / 리포 이름으로 맞게 수정
+# GitHub 계정 / 리포 이름
 # ---------------------------------------------------------
 OWNER = "SungHunYang"          # GitHub 사용자명
 REPO = "SungHunYang.github.io" # 이 리포 이름
@@ -50,7 +50,6 @@ def iso_kst_date(timestamp: str) -> str:
     GitHub가 주는 UTC timestamp("2025-11-26T00:00:00Z")를
     한국 시간(UTC+9) 날짜 문자열(YYYY-MM-DD)로 변환
     """
-    # Z를 +00:00 으로 바꿔서 timezone 인식
     dt_utc = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
     dt_kst = dt_utc + timedelta(hours=9)
     return dt_kst.date().isoformat()
@@ -61,18 +60,19 @@ def aggregate_stats(traffic_dict: dict):
     전체 히스토리(history.json)를 기반으로
     daily / weekly / monthly 데이터 생성
 
-    - daily: 날짜별 uniques
-    - weekly: 같은 달 안에서 "몇 주차" 기준 (예: 2025-11-W4)
-    - monthly: 년-월 기준
+    -> 이 버전은 '총 방문수(count)' 기준
     """
     if not traffic_dict:
         return [], [], [], [], [], []
 
     dates = sorted(traffic_dict.keys())
 
-    # daily
+    # daily (총 방문수)
     daily_dates = dates
-    daily_uniques = [traffic_dict[d]["uniques"] for d in dates]
+    daily_counts = [
+        traffic_dict[d].get("count", traffic_dict[d].get("uniques", 0))
+        for d in dates
+    ]
 
     # weekly (월 단위 주차: 1~5주)
     week_totals = defaultdict(int)
@@ -82,7 +82,8 @@ def aggregate_stats(traffic_dict: dict):
         month = dt.month
         week_of_month = (dt.day - 1) // 7 + 1  # 1~5
         week_key = f"{year}-{month:02d}-W{week_of_month}"
-        week_totals[week_key] += traffic_dict[d]["uniques"]
+        value = traffic_dict[d].get("count", traffic_dict[d].get("uniques", 0))
+        week_totals[week_key] += value
 
     weekly_keys = sorted(week_totals.keys())
     weekly_vals = [week_totals[w] for w in weekly_keys]
@@ -92,14 +93,15 @@ def aggregate_stats(traffic_dict: dict):
     for d in dates:
         dt = datetime.fromisoformat(d)
         month_key = f"{dt.year}-{dt.month:02d}"
-        month_totals[month_key] += traffic_dict[d]["uniques"]
+        value = traffic_dict[d].get("count", traffic_dict[d].get("uniques", 0))
+        month_totals[month_key] += value
 
     monthly_keys = sorted(month_totals.keys())
     monthly_vals = [month_totals[m] for m in monthly_keys]
 
     return (
         daily_dates,
-        daily_uniques,
+        daily_counts,
         weekly_keys,
         weekly_vals,
         monthly_keys,
@@ -107,14 +109,14 @@ def aggregate_stats(traffic_dict: dict):
     )
 
 
-def plot_line(x, y, title, path, xlabel="date", ylabel="unique visitors"):
+def plot_line(x, y, title, path, xlabel="date", ylabel="visits"):
     """
     다크 테마 + Flat UI blue + 투명 배경 + annotation 스타일 그래프
     """
     if not x or not y:
         return
 
-    # 전역 폰트 설정 (DejaVu Sans는 깃허브 러너에 기본 포함)
+    # 전역 폰트 설정
     plt.rcParams["font.family"] = "DejaVu Sans"
 
     # 다크모드 테마
@@ -198,8 +200,8 @@ def main():
     for v in views:
         day = iso_kst_date(v["timestamp"])
         daily_stats[day] = {
-            "count": v["count"],
-            "uniques": v["uniques"],
+            "count": v["count"],      # 총 방문수
+            "uniques": v["uniques"],  # 유니크 방문수 (혹시 나중에 쓸 수도 있으니 유지)
         }
 
     # 정렬 후 14일만 유지
@@ -226,46 +228,52 @@ def main():
 
     # -----------------------------
     # 4) 그래프 생성
-    #    - Daily 그래프: 최근 14일만
-    #    - Weekly / Monthly: 전체 history 기반
+    #    - Daily 그래프: 최근 14일만 (총 방문수)
+    #    - Weekly / Monthly: 전체 history 기반 (총 방문수)
     # -----------------------------
     (
         _daily_dates_all,
-        _daily_vals_all,
+        _daily_counts_all,
         weekly_keys,
         weekly_vals,
         monthly_keys,
         monthly_vals,
     ) = aggregate_stats(history)
 
-    # Daily (last 14 days, KST)
+    # Daily (last 14 days, KST) — 총 방문수
     recent_daily_dates = sorted(daily_stats.keys())
-    recent_daily_vals = [daily_stats[d]["uniques"] for d in recent_daily_dates]
+    recent_daily_vals = [
+        daily_stats[d].get("count", daily_stats[d].get("uniques", 0))
+        for d in recent_daily_dates
+    ]
 
     plot_line(
         recent_daily_dates,
         recent_daily_vals,
-        "Daily Unique Visitors (last 14 days)",
+        "Daily Visits (last 14 days, KST)",
         "stats/traffic_daily.png",
         xlabel="date (KST)",
+        ylabel="visits",
     )
 
     # Weekly (YYYY-MM-Wn 형식. 예: 2025-11-W4)
     plot_line(
         weekly_keys,
         weekly_vals,
-        "Weekly Unique Visitors",
+        "Weekly Visits (KST weeks)",
         "stats/traffic_weekly.png",
         xlabel="year-month-week",
+        ylabel="visits",
     )
 
     # Monthly (YYYY-MM)
     plot_line(
         monthly_keys,
         monthly_vals,
-        "Monthly Unique Visitors",
+        "Monthly Visits (KST)",
         "stats/traffic_monthly.png",
         xlabel="year-month",
+        ylabel="visits",
     )
 
 
