@@ -1,12 +1,12 @@
 # SungHunYang.github.io
 
-## traffic stats
+## Traffic stats
 
-### daily (last 14 days)
+### Daily (last 14 days)
 ![daily traffic](stats/traffic_daily.png)
 
-### weekly
+### Weekly
 ![weekly traffic](stats/traffic_weekly.png)
 
-### monthly
+### Monthly
 ![monthly traffic](stats/traffic_monthly.png)
